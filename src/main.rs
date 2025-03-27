@@ -1,5 +1,5 @@
 use std::io;
-use std::io::{BufRead};
+use std::io::{BufRead, BufWriter, Write};
 use chrono::prelude::{DateTime, Local};
 use std::time::{SystemTime};
 
@@ -8,25 +8,33 @@ fn iso8601(st: &std::time::SystemTime) -> String {
     format!("{}", dt.format("%+"))
 }
 
+// fn handleLine(line: &std::io::Result<String>) -> String {
+//
+// }
+
 fn main() {
     let stdin = io::stdin();
-    let mut handle = stdin.lock();
-    let mut line = String::new();
+    let mut in_handle = stdin.lock();
+    let mut out_handle = BufWriter::new(io::stdout());
+    let mut in_line = String::new();
     let mut eof = false;
 
 
     while !eof {
-        match handle.read_line(&mut line) {
+        match in_handle.read_line(&mut in_line) {
             Ok(0) => {
                 eof = true;
             }
             Ok(_) => {
                 let now = SystemTime::now();
                 let timestamp = iso8601(&now);
-                print!("{}", format!("{timestamp}: {line}"));
-                line.clear();
+
+                out_handle.write_all(format!("{timestamp}: ").as_bytes()).unwrap();
+                out_handle.write_all(in_line.as_bytes()).unwrap();
+                out_handle.flush().unwrap();
+                in_line.clear();
             }
-            Err(_error) => { panic!("something went wrong"); }
+            Err(_error) => { panic!("error reading stdin"); }
         }
     }
 }
