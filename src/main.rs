@@ -10,9 +10,12 @@ struct Args {
 
     #[arg(short, long, default_value_t = String::from("log"))]
     prefix: String,
+
+    #[arg(short, long, default_value_t = false)]
+    silent: bool,
 }
 
 fn main() {
     let args = Args::parse();
-    create_logger(&args.prefix, args.timezone);
+    create_logger(&args.prefix, args.timezone, args.silent);
 }

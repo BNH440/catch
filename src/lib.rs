@@ -39,7 +39,7 @@ fn generate_log_filename(prefix: &str, tz: &TZ, dt: &DateTime<Utc>) -> String {
     }
 }
 
-pub fn create_logger(prefix: &str, tz: TZ) {
+pub fn create_logger(prefix: &str, tz: TZ, silent: bool) {
     let stdin = io::stdin();
     let mut in_handle = stdin.lock();
     let mut out_handle = BufWriter::new(io::stdout());
@@ -69,10 +69,12 @@ pub fn create_logger(prefix: &str, tz: TZ) {
                 let now = Utc::now();
                 let timestamp = timestamp(&tz, &now);
 
-                // write to console
-                out_handle.write_all(format!("{}: ", timestamp.bold()).as_bytes()).unwrap();
-                out_handle.write_all(in_line.as_bytes()).unwrap();
-                
+                if !silent {
+                    // write to console
+                    out_handle.write_all(format!("{}: ", timestamp.bold()).as_bytes()).unwrap();
+                    out_handle.write_all(in_line.as_bytes()).unwrap();
+                }
+
                 // write to log file
                 log_handle.write_all(format!("{}: ", timestamp).as_bytes()).unwrap();
                 log_handle.write_all(in_line.as_bytes()).unwrap();
