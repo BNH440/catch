@@ -1,5 +1,5 @@
 # Catch
-A rust program for simple command line logging.
+A rust program for simple command line logging. Currently WIP.
 
 ## Caveats
 You must run a program with the following format if you want the stderr to be captured:
